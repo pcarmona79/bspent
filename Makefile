@@ -20,20 +20,27 @@ BIN_DIR := bin
 APP_NAME := bspent
 MAIN_GO := cmd/bspent.go
 
+SRC := \
+	bsp/bspfile.go \
+	cmd/bspent.go \
+	ent/entfile.go
+
 # Default target
 .PHONY: all
 all: build
 
 # Build the go application
-.PHONY: build
-build:
-	@echo "Building $(APP_NAME)..."
-	go build -o $(BIN_DIR)/$(APP_NAME) $(MAIN_GO)
+build: $(BIN_DIR)/$(APP_NAME)
 
-.PHONY: build-windows
-build-windows:
+windows: $(BIN_DIR)/$(APP_NAME).exe
+
+$(BIN_DIR)/$(APP_NAME): $(SRC)
+	@echo "Building $(APP_NAME)..."
+	go build -o $@ $(MAIN_GO)
+
+$(BIN_DIR)/$(APP_NAME).exe: $(SRC)
 	@echo "Building $(APP_NAME) for Windows..."
-	GOOS=windows GOARCH=amd64 go build -o $(BIN_DIR)/$(APP_NAME).exe $(MAIN_GO)
+	GOOS=windows GOARCH=amd64 go build -o $@ $(MAIN_GO)
 
 # Run the go application
 .PHONY: run
